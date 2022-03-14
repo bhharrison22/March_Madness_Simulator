@@ -39,7 +39,6 @@ class Region:
 
 
 def final_four(finalists):
-    print(finalists)
     finalist1, loser = match(finalists[0], finalists[3])  # East vs West
     finalist2, loser = match(finalists[1], finalists[2])  # South vs Midwest
     winner, loser = match(finalist1, finalist2)
