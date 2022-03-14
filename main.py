@@ -38,11 +38,21 @@ class Region:
         self.winner = None
 
 
+def final_four(finalists):
+    print(finalists)
+    finalist1, loser = match(finalists[0], finalists[3])  # East vs West
+    finalist2, loser = match(finalists[1], finalists[2])  # South vs Midwest
+    winner, loser = match(finalist1, finalist2)
+    return winner
+
+
 def run_madness(regions):
     final_four = []
     for reg_str in region_strings:
-        final_four.append(simulate_bracket(regions[reg_str]))
+        simulate_bracket(regions[reg_str])
         print("{} Wins the {} Region!".format(regions[reg_str].winner.name, reg_str))
+        final_four.append(regions[reg_str].winner)
+    return final_four
 
 
 def simulate_bracket(region):
@@ -60,7 +70,7 @@ def simulate_bracket(region):
 
         for loser in remove:
             teams.remove(loser)
-        print("----------")
+        print("")
 
     region.winner = teams[0]  # last remaining team wins region
 
@@ -89,6 +99,7 @@ def label_2022_teams(regions):
 
     for reg_str in region_strings:
         for seed in regions[reg_str].seeds:
+            # Why is there no switch/case in Python??
             if seed.region == "East":
                 seed.name = "#{} {}".format(seed.seed, east[seed.seed - 1])
             elif seed.region == "South":
@@ -101,6 +112,7 @@ def label_2022_teams(regions):
                 print("Something went wrong with team labelling")
                 exit(0)
 
+
 if __name__ == '__main__':
     regions = {}
     for reg_str in region_strings:
@@ -112,5 +124,9 @@ if __name__ == '__main__':
         regions[reg_str] = Region(seeds, reg_str)
 
     label_2022_teams(regions)
-    run_madness(regions)
+    finalists = run_madness(regions)
+    print("\nThe final Four are {}, {}, {}, and {}!".format(finalists[0].name, finalists[1].name, finalists[2].name, finalists[3].name))
+    winner = final_four(finalists)
+    print("******* {} Win March Madness *******".format(winner.name))
+
 
