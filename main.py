@@ -39,8 +39,9 @@ class Region:
 
 
 def run_madness(regions):
+    final_four = []
     for reg_str in region_strings:
-        simulate_bracket(regions[reg_str])
+        final_four.append(simulate_bracket(regions[reg_str]))
         print("{} Wins the {} Region!".format(regions[reg_str].winner.name, reg_str))
 
 
@@ -79,15 +80,37 @@ def match(team1, team2):
     return winner, loser
 
 
+# This is how region/seed relate to team name as of 2022 Bracket
+def label_2022_teams(regions):
+    east = ["Baylor", "Kentucky", "Purdue", "UCLA", "Saint Mary's", "Texas", "Murray State", "N. Carolina", "Marquette", "San Fran.", "Va. Tech", "Wyoming/Indiana", "Akron", "Yale", "St. Peters", "Norfolk St."]
+    south = ["Arizona", "Villanova", "Tennessee", "Illinois", "Houston", "Colorado St.", "Ohio State", "Seton Hall", "TCU", "Loyola Chicago", "Michigan", "UAB", "Chattanooga", "Longwood", "Delaware", "Wright State/Bryant"]
+    midwest = ["Kansas", "Auburn", "Wisconsin", "Providence", "Iowa", "LSU", "USC", "San Diego St.", "Creighton", "Miami (Fla.)", "Iowa State", "Richmond", "South Dakota St.", "Colgate", "Jax. State", "Texas So./Texas A&M-CC"]
+    west = ["Gonzaga", "Duke", "Texas Tech", "Arkansas", "Connecticut", "Alabama", "Michigan St.", "Boise State", "Memphis", "Davidson", "Rutgers/Notre Dame", "New Mexico St.", "Vermont", "Montana St.", "CS Fullerton", "Georgia St."]
+
+    for reg_str in region_strings:
+        for seed in regions[reg_str].seeds:
+            if seed.region == "East":
+                seed.name = "#{} {}".format(seed.seed, east[seed.seed - 1])
+            elif seed.region == "South":
+                seed.name = "#{} {}".format(seed.seed, south[seed.seed - 1])
+            elif seed.region == "Midwest":
+                seed.name = "#{} {}".format(seed.seed, midwest[seed.seed - 1])
+            elif seed.region == "West":
+                seed.name = "#{} {}".format(seed.seed, west[seed.seed - 1])
+            else:
+                print("Something went wrong with team labelling")
+                exit(0)
+
 if __name__ == '__main__':
     regions = {}
     for reg_str in region_strings:
         seeds = []
 
-        # This is the March Madness Order, not sure if there's a good way to automate this:
+        # This is the March Madness match order, not sure if there's a good way to automate this:
         for i in [1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15]:
             seeds.append(Seed(reg_str, i))
         regions[reg_str] = Region(seeds, reg_str)
 
+    label_2022_teams(regions)
     run_madness(regions)
 
